@@ -13,6 +13,9 @@ export CLUSTERIP=`docker network inspect bridge | grep '"IPv4Address"' | cut -b 
 echo ""
 echo "Get inside minikube"
 eval $(minikube docker-env)
+
+echo ""
+echo "Download minikube addons"
 minikube addons enable dashboard && minikube addons enable metrics-server
 
 echo ""
@@ -26,6 +29,7 @@ echo "Lauching custom pods"
 echo "Cluster gateway IP =" $CLUSTERIP
 sed -i -e "s/clusterip/$CLUSTERIP/g" ./srcs/nginx/srcs/my_ng.conf
 sed -i -e "s/clusterip/$CLUSTERIP/g" ./srcs/metallb/metallb.yaml
+sed -i -e "s/clusterip/$CLUSTERIP/g" ./srcs/ftps/srcs/vsftpd.conf
 
 echo "nginx:"
 docker build -t nginx ./srcs/nginx/ > /dev/null 2>&1
@@ -51,6 +55,7 @@ echo ""
 echo "ftps:"
 docker build -t ftps ./srcs/ftps/ > /dev/null 2>&1
 kubectl apply -f ./srcs/ftps/ftps.yaml
+sed -i -e "s/$CLUSTERIP/clusterip/g" ./srcs/ftps/srcs/vsftpd.conf
 
 echo ""
 echo "grafana:"
@@ -88,6 +93,9 @@ echo "Login information :"
 echo "For Grafana :"
 echo "   Login : admin"
 echo "   Password : lolilol"
+echo "For Ftps :"
+echo "  Login: aduchemi"
+echo "  Password: password1!"
 echo ""
 echo "Press Enter to open dashboard"
 read REPLY
