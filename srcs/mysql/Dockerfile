@@ -5,12 +5,13 @@ RUN	apk update \
 
 RUN chmod -R 755 /var/* \
 	&& mkdir -p /var/log/mysql && chown -R root:root /var/log/mysql \
-	&& chown -R root:root /var/lib/mysql
+	&& mkdir -p /var/lib/mysql && chown -R root:root /var/lib/mysql
 RUN	mkdir -p /run/mysqld && chmod -R 755 /run/mysqld && chown -R root:root /run/mysqld
 
 ADD	./srcs/my.cnf /etc/mysql/my.cnf
 ADD	./srcs/setup.sh /
 ADD	./srcs/telegraf.conf /etc/telegraf/
+ADD	./srcs/wordpress.sql /
 
 ENV	MYSQL_ROOT	'administrateur'
 ENV	MYSQL_PASS	'pass_administrateur'

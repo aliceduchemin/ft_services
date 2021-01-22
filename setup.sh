@@ -30,6 +30,7 @@ echo "Cluster gateway IP =" $CLUSTERIP
 sed -i -e "s/clusterip/$CLUSTERIP/g" ./srcs/nginx/srcs/my_ng.conf
 sed -i -e "s/clusterip/$CLUSTERIP/g" ./srcs/metallb/metallb.yaml
 sed -i -e "s/clusterip/$CLUSTERIP/g" ./srcs/ftps/srcs/vsftpd.conf
+sed -i -e "s/clusterip/$CLUSTERIP/g" ./srcs/mysql/srcs/wordpress.sql
 
 echo "nginx:"
 docker build -t nginx ./srcs/nginx/ > /dev/null 2>&1
@@ -50,6 +51,7 @@ echo ""
 echo "mysql:"
 docker build -t mysql ./srcs/mysql/ > /dev/null 2>&1
 kubectl apply -f ./srcs/mysql/mysql.yaml
+sed -i -e "s/$CLUSTERIP/clusterip/g" ./srcs/mysql/srcs/wordpress.sql
 
 echo ""
 echo "ftps:"
@@ -94,8 +96,15 @@ echo "For Grafana :"
 echo "   Login : admin"
 echo "   Password : lolilol"
 echo "For Ftps :"
-echo "  Login: aduchemi"
-echo "  Password: password1!"
+echo "   Login: aduchemi"
+echo "   Password: password1!"
+echo "For Wordpress :"
+echo "   Login admin : aduchemi"
+echo "   Password admin : password1!"
+echo "   Login user1 : utilisateur1"
+echo "   Password user1 : password1!"
+echo "   Login user2 : utilisateur2"
+echo "   Password user2 : password1!"
 echo ""
 echo "Press Enter to open dashboard"
 read REPLY
